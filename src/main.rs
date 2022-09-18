@@ -1,10 +1,11 @@
 use clap::Parser;
-use cli::Cli;
+use cli::{Action, Cli};
 use config::Config;
 
 mod cli;
 mod config;
 mod dir;
+mod entry;
 mod error;
 
 fn main() -> anyhow::Result<()> {
@@ -13,7 +14,7 @@ fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
     let config = Config::try_from(&cli)?;
 
-    println!("{:?}", config);
-
-    Ok(())
+    match cli.action {
+        Action::List => todo!(),
+    }
 }
