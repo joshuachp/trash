@@ -11,7 +11,7 @@ use crate::error::XdgError;
 
 /// Gets the `XDG_DATA_HOME` environment variable.
 pub fn xdg_data_home() -> Result<PathBuf, XdgError> {
-    match env::var("XDG_DATA_HOME").map(|var| PathBuf::from(var)) {
+    match env::var("XDG_DATA_HOME").map(PathBuf::from) {
         Ok(path) if path.is_relative() => {
             warn!("XDG_DATA_HOME environment variable is a relative path, ignoring");
         }
@@ -26,7 +26,7 @@ pub fn xdg_data_home() -> Result<PathBuf, XdgError> {
         }
     }
 
-    match env::var("HOME").map(|var| PathBuf::from(var)) {
+    match env::var("HOME").map(PathBuf::from) {
         Ok(home) if home.is_relative() => Err(XdgError::Relative("HOME")),
         Ok(mut home) => {
             home.push(".local/share");
