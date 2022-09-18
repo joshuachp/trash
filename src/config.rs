@@ -9,17 +9,17 @@ pub struct Config {
     trash_dir: PathBuf,
 }
 
-impl TryFrom<Cli> for Config {
+impl TryFrom<&Cli> for Config {
     type Error = anyhow::Error;
 
-    fn try_from(value: Cli) -> Result<Self, Self::Error> {
+    fn try_from(value: &Cli) -> Result<Self, Self::Error> {
         let trash_dir = match value.trash_dir {
-            Some(dir) => {
+            Some(ref dir) => {
                 if !dir.is_dir() {
                     return Err(anyhow!("{} is not a directory", dir.to_string_lossy()));
                 }
 
-                dir
+                dir.clone()
             }
             None => xdg_trash_dir()?,
         };

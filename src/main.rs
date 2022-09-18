@@ -1,5 +1,3 @@
-use std::convert::TryInto;
-
 use clap::Parser;
 use cli::Cli;
 use config::Config;
@@ -12,7 +10,8 @@ mod error;
 fn main() -> anyhow::Result<()> {
     env_logger::try_init()?;
 
-    let config: Config = Cli::parse().try_into()?;
+    let cli = Cli::parse();
+    let config = Config::try_from(&cli)?;
 
     println!("{:?}", config);
 
