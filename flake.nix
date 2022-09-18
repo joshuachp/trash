@@ -44,7 +44,10 @@
           default =
             (naersk-lib.override {
               inherit (fenix-pkg) cargo rustc;
-            }).buildPackage { root = ./.; };
+            }).buildPackage {
+              pname = "trash";
+              root = ./.;
+            };
         });
 
       apps = eachSystemMap (system: {
