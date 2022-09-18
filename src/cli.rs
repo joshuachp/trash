@@ -7,5 +7,5 @@ use clap::Parser;
 pub struct Cli {
     /// Trash directory to use
     #[clap(long, short)]
-    trash_dir: Option<PathBuf>,
+    pub trash_dir: Option<PathBuf>,
 }

@@ -1,20 +1,20 @@
-use anyhow::Context;
+use std::convert::TryInto;
+
 use clap::Parser;
 use cli::Cli;
-use dir::xdg_data_home;
+use config::Config;
 
 mod cli;
+mod config;
 mod dir;
 mod error;
 
 fn main() -> anyhow::Result<()> {
     env_logger::try_init()?;
 
-    let cli = Cli::parse();
+    let config: Config = Cli::parse().try_into()?;
 
-    let mut trash_home =
-        xdg_data_home().context("failed reading XDG_DATA_HOME environment variable")?;
-    trash_home.push("Trash");
+    println!("{:?}", config);
 
     Ok(())
 }

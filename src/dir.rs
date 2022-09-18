@@ -3,9 +3,10 @@
 use std::{
     env::{self, VarError},
     fs,
-    path::{Path, PathBuf},
+    path::PathBuf,
 };
 
+use anyhow::Context;
 use log::{info, warn};
 
 use crate::error::XdgError;
@@ -38,12 +39,20 @@ pub fn xdg_data_home() -> Result<PathBuf, XdgError> {
     }
 }
 
-pub fn create_dir(dir: &Path) -> Result<(), std::io::Error> {
-    dir.try_exists().and_then(|exists| {
-        if !exists {
-            info!("creating {:?} directory and its parents", dir);
-            return fs::create_dir_all(dir);
-        }
-        Ok(())
-    })
+pub fn xdg_trash_dir() -> anyhow::Result<PathBuf> {
+    let mut path = xdg_data_home().context("failed getting XDG_DATA_HOME environment variable")?;
+
+    path.push("Trash");
+
+    let exists = path
+        .try_exists()
+        .context("failed while checking the existence of the Trash directory")?;
+
+    if !exists {
+        info!("creating {:?} directory and its parents", &path);
+
+        fs::create_dir_all(&path).context("failed to create Trash directory")?;
+    }
+
+    Ok(path)
 }
