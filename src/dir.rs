@@ -2,10 +2,11 @@
 
 use std::{
     env::{self, VarError},
-    path::PathBuf,
+    fs,
+    path::{Path, PathBuf},
 };
 
-use log::warn;
+use log::{info, warn};
 
 use crate::error::XdgError;
 
@@ -35,4 +36,14 @@ pub fn xdg_data_home() -> Result<PathBuf, XdgError> {
         Err(VarError::NotPresent) => Err(XdgError::NotPresent("HOME")),
         Err(VarError::NotUnicode(os_string)) => Err(XdgError::NotUnicode("HOME", os_string)),
     }
+}
+
+pub fn create_dir(dir: &Path) -> Result<(), std::io::Error> {
+    dir.try_exists().and_then(|exists| {
+        if !exists {
+            info!("creating {:?} directory and its parents", dir);
+            return fs::create_dir_all(dir);
+        }
+        Ok(())
+    })
 }
